@@ -1,4 +1,4 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Inicializar Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBIXlgOct2UzkrZbZYbyHu6_NbLDzTqqig",
   authDomain: "despachos-novogar.firebaseapp.com",
@@ -13,58 +13,71 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Función para cargar datos
+// Función para cambiar el foco al siguiente input o resetear al primero
+function nextInput(event, id) {
+  if (event.keyCode === 13) {
+    if (id === "inputEmail") {
+      document.getElementById("formulario").reset();
+      document.getElementById("inputCliente").focus();
+    } else {
+      document.getElementById(id).focus();
+    }
+  }
+}
+
+// Función para cargar datos en Firebase y agregar a la tabla
 function cargarDatos() {
-  const cliente = document.getElementById('clienteInput').value;
-  const remito = document.getElementById('remitoInput').value;
-  const etiqueta = document.getElementById('etiquetaInput').value;
-  const email = document.getElementById('emailInput').value;
+  const fechaHora = new Date().toLocaleString();
+  const numCliente = document.getElementById("inputCliente").value;
+  const numRemito = document.getElementById("inputRemito").value;
+  const numEtiqueta = document.getElementById("inputEtiqueta").value;
+  const email = document.getElementById("inputEmail").value;
 
-  const timestamp = new Date().toLocaleString();
+  if (fechaHora && numCliente && numRemito && numEtiqueta && email) {
+    const nuevaEntradaRef = database.ref('registros').push();
+    nuevaEntradaRef.set({
+      fechaHora: fechaHora,
+      numCliente: numCliente,
+      numRemito: numRemito,
+      numEtiqueta: numEtiqueta,
+      email: email
+    }).then(() => {
+      console.log("Datos guardados correctamente.");
+      // Limpiar campos después de guardar
+      document.getElementById("formulario").reset();
+      document.getElementById("inputCliente").focus();
+    }).catch(error => {
+      console.error("Error al guardar datos:", error);
+    });
+  } else {
+    console.error("Los campos no pueden estar vacíos.");
+  }
+}
 
-  // Guardar datos en Firebase
-  database.ref('datos').push({
-    fecha: timestamp,
-    cliente: cliente,
-    remito: remito,
-    etiqueta: etiqueta,
-    email: email
+// Función para obtener los registros desde Firebase y mostrar en la tabla con paginación
+function cargarRegistrosPaginacion(page) {
+  const registrosRef = database.ref('registros');
+  registrosRef.limitToLast(5 * page).once('value', function(snapshot) {
+    const registros = snapshot.val();
+    const paginatedRegistros = Object.entries(registros).reverse().slice(0, 5); // Obtener los últimos 5 registros
+    document.getElementById("tablaBody").innerHTML = "";
+    paginatedRegistros.forEach(([key, data]) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${data.fechaHora}</td><td>${data.numRemito}</td><td>${data.numCliente}</td><td>${data.numEtiqueta}</td><td>${data.email}</td>`;
+      document.getElementById("tablaBody").appendChild(row);
+    });
+
+    // Paginación
+    const totalPages = Math.ceil(Object.keys(registros).length / 5);
+    document.getElementById("pagination").innerHTML = "";
+    for (let i = 1; i <= totalPages; i++) {
+      const li = document.createElement("li");
+      li.className = `page-item ${page === i ? 'active' : ''}`;
+      li.innerHTML = `<a class="page-link" href="#" onclick="cargarRegistrosPaginacion(${i})">${i}</a>`;
+      document.getElementById("pagination").appendChild(li);
+    }
   });
-
-  // Limpiar los campos de entrada
-  document.getElementById('clienteInput').value = '';
-  document.getElementById('remitoInput').value = '';
-  document.getElementById('etiquetaInput').value = '';
-  document.getElementById('emailInput').value = '';
 }
 
-// Función para mostrar datos en la tabla
-function mostrarDatos(fecha, cliente, remito, etiqueta, email) {
-  const tableBody = document.getElementById('dataBody');
-  const newRow = `<tr>
-                    <td>${fecha}</td>
-                    <td>${remito}</td>
-                    <td>${cliente}</td>
-                    <td>${etiqueta}</td>
-                    <td>${email}</td>
-                  </tr>`;
-  tableBody.insertAdjacentHTML('afterbegin', newRow);
-}
-
-// Mostrar spinner mientras se cargan los datos
-const spinner = document.getElementById('spinner');
-spinner.style.display = 'block';
-
-// Escuchar cambios en la base de datos de Firebase y mostrarlos
-database.ref('datos').on('child_added', (snapshot) => {
-  const data = snapshot.val();
-  mostrarDatos(data.fecha, data.cliente, data.remito, data.etiqueta, data.email);
-
-  // Ocultar spinner una vez que se cargan los datos
-  spinner.style.display = 'none';
-});
-
-// Enviar datos a Firebase al cargar la página
-window.addEventListener('load', () => {
-  cargarDatos();
-});
+// Cargar registros inicialmente con paginación
+cargarRegistrosPaginacion(1);
