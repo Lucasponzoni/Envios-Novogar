@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Rubik:wght@500&family=Unbounded:wght@400;500;600;700&display=swap" rel="stylesheet">    <style>
+        
+        /* Estilo para el mapa Leaflet */
+        #map {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="https://novogar.com.ar/" target="_blank">
+        <img class="logo container d-flex justify-content-center" src="./img/Novogar Logo Large.png" alt="Novogar" />
+    </a>  
+
+    <div id="map"></div>
+
+    <div class="container d-flex justify-content-center">
+        <div class="form-floating buscador2">
+            <input type="text" class="form-control" id="remitoInput" autofocus placeholder="Número de Remito" />
+            <input type="text" class="form-control" id="clienteInput" placeholder="Número de Cliente" />
+        </div>
+    </div>
+
+    <div class="container d-flex justify-content-center">
+        <div class="form-floating buscador">
+            <input type="text" class="form-control" id="addressInput" placeholder="Ingresa una dirección" />
+            <button id="searchButton" class="btn btn-primary">Buscar</button>
+        </div>
+    </div>
+
+    <div class="container d-flex justify-content-center">
+        <div id="spinner" style="display: none;">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden"></span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container d-flex justify-content-center list">
+        <div id="addressList">
+            <!-- Lista de direcciones se agregará aquí -->
+        </div>
+
+    </div>
+    
+    <footer class="center">
+        <img class="logo-foot" src="./img/Novogar Logo Large.png" alt="Logo Novogar">
+        <a href="https://novogar.com.ar/info/empresa" target="_blank" >Quienes somos</a>
+        <a href="https://novogar.com.ar/info/Sucursales" target="_blank" >Sucursales</a>
+        <a href="https://novogar.com.ar/info/ventaTelefonica" target="_blank" >Atención al cliente</a>
+    </footer>
+    
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

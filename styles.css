@@ -1,0 +1,180 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Unbounded', sans-serif; 
+}
+
+@font-face {
+  font-family: sf_pro;
+  src: url(./Elements/sf_pro_bold.OTF);
+}
+
+@font-face {
+  font-family: sf_pro_light;
+  src: url(./elements/sf_pro_light.OTF);
+}
+
+/*font-family: 'Poppins', sans-serif;
+font-family: 'Rubik', sans-serif;
+font-family: 'Unbounded', sans-serif;*/
+
+#map {
+  height: 150px;
+  width: 100%;
+}
+
+.buscador{
+display: flex;
+margin: 1rem;
+}
+
+#searchButton{
+  background-color: red;
+  border: none;
+  border-radius: 0 5% 5% 0;
+}
+
+#addressInput {
+  border-radius: 0;
+  min-width: 50vw;
+}
+
+@media (max-width: 768px) {
+  #addressInput {
+      min-width: 80vw;
+  }
+}
+
+.delete-button{
+  font-size: 1rem;
+  margin: .2rem;
+  padding: .5rem;
+  background-color: lightseagreen;
+  color: white;
+  border-radius: 10px;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .delete-button {
+    font-size: .8rem;
+    padding: .5rem;
+  }
+}
+
+.delete-button:hover{
+  background-color: lightcoral;
+  transition: .5s;
+}
+
+.select-button{
+  font-size: 1rem;
+  margin: .3rem;
+  padding: .6rem;
+  background-color: lightseagreen;
+  color: white;
+  border-radius: 10px;
+  border: none;
+}
+
+.buscador2{
+  min-width: 50vw;
+  gap: 1rem;
+  display: flex;
+  margin-top: 1rem;
+}
+
+.remito-cliente-line {
+  font-size: .8rem;
+  margin: 0;
+  padding: .2rem;
+  text-align: start;
+  background-color: gray;
+  color: white;
+  border-radius: 5px;
+  width: fit-content;
+}
+
+@media (max-width: 768px) {
+  .remito-cliente-line {
+    font-size: .6;
+    width: fit-content;
+  }
+}
+
+.section-container {
+  margin-top: -.2rem;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    margin-top: -.1rem;
+    padding: 0;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .select-button {
+    font-size: .8rem;
+    padding: .58rem;
+  }
+}
+
+.select-button:hover{
+  background-color: lightcoral;
+  transition: .5s;
+}
+
+.logo{
+  width: 400px;
+  padding: 1rem;
+}
+
+footer{
+  padding: 1rem;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  font-family: 'Unbounded', cursive;
+}
+
+footer > a{
+  text-decoration: none;
+  color: grey;
+  transition: .5s;
+}
+
+footer > a:hover{
+  text-decoration: underline;
+  color: red;
+}
+
+.logo-foot{
+  width: 300px;
+}
+
+#addressList{
+  padding: 2rem;
+  border-radius: 20px;
+  border: solid 2px red;
+  display: none;
+  width: auto;
+}
+
+@media (max-width: 768px) {
+  #addressList {
+    font-size: .8rem;
+    padding: .5rem;
+    width: 100%;
+  }
+}
+
+#spinner{
+  margin: 1rem;
+}
+
