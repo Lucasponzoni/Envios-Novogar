@@ -15,31 +15,68 @@ const database = firebase.database();
 
 // Función para cambiar el foco al siguiente input o resetear al primero
 function nextInput(event, id) {
-  if (event.keyCode === 13) {
-    if (id === "inputEmail") {
+  if (event.key === "Enter") { // Si se presiona la tecla Enter
+    event.preventDefault(); // Detener el comportamiento predeterminado del formulario
+    
+    const inputEtiqueta = document.getElementById("inputEtiqueta");
+    const inputBulto = document.getElementById("inputBulto");
+    const numEtiqueta = inputEtiqueta.value.trim(); // Obtener el valor del input y eliminar espacios en blanco
+    const numBulto = inputBulto.value.trim(); // Obtener el valor del input y eliminar espacios en blanco
+    
+    if (id === "inputEmail") { // Si el foco está en el último input (email)
       document.getElementById("formulario").reset();
-      document.getElementById("inputCliente").focus();
+      document.getElementById("inputCliente").focus(); // Reiniciar el formulario y colocar el foco en el primer input (cliente)
     } else {
-      document.getElementById(id).focus();
+      if (id === "inputEtiqueta") { // Si el foco está en el input de etiqueta
+        if (numEtiqueta.startsWith("36")) { // Si el número de etiqueta comienza con "36"
+          inputBulto.value = "1"; // Colocar automáticamente "1" en el input de bulto
+          document.getElementById("inputRemito").focus(); // Colocar el foco en el input de remito
+          return; // Salir de la función, evitando el resto de las validaciones
+        } else {
+          const ultimoDigito = numEtiqueta.slice(-2); // Obtener los últimos dos dígitos del número de etiqueta
+          if (!isNaN(ultimoDigito)) { // Si los últimos dos dígitos son numéricos
+            inputBulto.value = parseInt(ultimoDigito); // Colocar el valor numérico en el input de bulto
+          }
+        }
+      }
+
+      if (!numBulto) { // Si el campo de bulto está vacío
+        alert("Por favor, ingrese el número de bulto."); // Mostrar mensaje de alerta
+        return; // Salir de la función
+      }
+
+      if (id === "inputBulto") { // Si el foco está en el input de bulto
+        document.getElementById("inputRemito").focus(); // Colocar el foco en el input de remito
+      } else {
+        document.getElementById(id).focus(); // Colocar el foco en el siguiente input
+      }
     }
   }
 }
 
+// Agregar un evento de escucha para el formulario en su conjunto
+document.getElementById("formulario").addEventListener("keypress", function(event) {
+  nextInput(event, event.target.id); // Llamar a la función nextInput cuando se presione una tecla en el formulario
+});
+
+
 // Función para cargar datos en Firebase y agregar a la tabla
 function cargarDatos() {
   const fechaHora = new Date().toLocaleString();
+  const numEtiqueta = document.getElementById("inputEtiqueta").value;
+  const numBulto = document.getElementById("inputBulto").value;
   const numCliente = document.getElementById("inputCliente").value;
   const numRemito = document.getElementById("inputRemito").value;
-  const numEtiqueta = document.getElementById("inputEtiqueta").value;
   const email = document.getElementById("inputEmail").value;
 
-  if (fechaHora && numCliente && numRemito && numEtiqueta && email) {
+  if (fechaHora && numCliente && numBulto && numRemito && numEtiqueta && email) {
     const nuevaEntradaRef = database.ref('registros').push();
     nuevaEntradaRef.set({
+      numEtiqueta: numEtiqueta,
+      numBulto: numBulto,
       fechaHora: fechaHora,
       numCliente: numCliente,
       numRemito: numRemito,
-      numEtiqueta: numEtiqueta,
       email: email
     }).then(() => {
       console.log("Datos guardados correctamente.");
@@ -63,7 +100,7 @@ function cargarRegistrosPaginacion(page) {
     document.getElementById("tablaBody").innerHTML = "";
     paginatedRegistros.forEach(([key, data]) => {
       const row = document.createElement("tr");
-      row.innerHTML = `<td>${data.fechaHora}</td><td>${data.numRemito}</td><td>${data.numCliente}</td><td>${data.numEtiqueta}</td><td>${data.email}</td>`;
+      row.innerHTML = `<td>${data.fechaHora}</td><td>${data.numEtiqueta}</td><td>${data.numBulto}</td><td>${data.numCliente}</td><td>${data.numRemito}</td><td>${data.email}</td>`;
       document.getElementById("tablaBody").appendChild(row);
     });
 
@@ -81,3 +118,4 @@ function cargarRegistrosPaginacion(page) {
 
 // Cargar registros inicialmente con paginación
 cargarRegistrosPaginacion(1);
+
